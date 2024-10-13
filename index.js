@@ -3,20 +3,23 @@ import express from 'express';
 import userRouter from './routes/userRoutes.js';
 import mongoose from 'mongoose';
 import galleryItemRouter from './routes/galleryItemRoutes.js';
+import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
+dotenv.config()
 
 //back end server program ek tm app kiynne dan
 const app = express()//back end server ek
 
 app.use(bodyParser.json()); //miidlware ekk , ehen en eke body ek hriyta hdnawa
 
-const connectionString = "mongodb+srv://tester2:222@cluster0.aaceh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const connectionString = process.env.MONGO_URL;
+console.log(connectionString)
 
 app.use((req, res, next) => {
     const token = req.header("Authorization")?.replace("Bearer ", "");
 
     if (token != null) {
-        jwt.verify(token, "secret", (err, decoded) => {
+        jwt.verify(token, process.env.JWT_KEY, (err, decoded) => {
             if (decoded != null) {
                 req.user = decoded;
                 
